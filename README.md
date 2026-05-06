@@ -48,6 +48,50 @@ This repository now includes a minimal Vue 3 app at the project root.
 
 The app route at `/` renders `src/views/CreateReview.vue`.
 
+## Firestore Submit Test
+
+The project includes a Playwright test that fills the review form, submits it without images, and confirms that the app redirects to the saved-review route with a Firestore document ID.
+
+For local confidence without using a live Firebase project, run the same test against the Firebase Firestore Emulator:
+
+```bash
+npm run test:firestore:emulator
+```
+
+This starts a local Firestore-compatible endpoint at `127.0.0.1:8080`, points the app at it with `VITE_USE_FIREBASE_EMULATOR=true`, submits the form, and shuts the emulator down when the test is finished.
+
+Before running it, replace every placeholder Firebase value in `.env` with the real Firebase web app config from the Firebase console. The test will fail fast if values such as `your-firebase-api-key` or `your-project.firebaseapp.com` are still present.
+
+Run:
+
+```bash
+npm run test:firestore
+```
+
+To test submitting with an image, Firebase Storage must also be enabled for the project and `VITE_FIREBASE_STORAGE_BUCKET` must match the bucket shown in Firebase Console > Storage.
+
+For testing only, Storage rules can allow anonymous uploads to the review image folder:
+
+```js
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /review-images/{fileName} {
+      allow write: if request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow read: if true;
+    }
+  }
+}
+```
+
+Then run:
+
+```bash
+npm run test:firestore:images
+```
+
 ## Delivery Notes
 
 The fixed component is included in three places:

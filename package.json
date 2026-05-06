@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "test:firestore": "playwright test tests/firestore-submit.spec.js -g \"without images\" --reporter=line",
+    "test:firestore:images": "playwright test tests/firestore-submit.spec.js -g \"uploads an image\" --reporter=line",
+    "test:firestore:emulator": "VITE_USE_FIREBASE_EMULATOR=true VITE_FIRESTORE_EMULATOR_HOST=127.0.0.1 VITE_FIRESTORE_EMULATOR_PORT=8080 VITE_FIREBASE_PROJECT_ID=demo-review-form npx firebase-tools@13.35.1 emulators:exec --project demo-review-form --only firestore \"npm run test:firestore\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -14,12 +17,13 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "@vitejs/plugin-vue": "^5.0.5",
-    "firebase": "^8.10.1",
+    "firebase": "^12.12.1",
     "vite": "^5.2.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3"

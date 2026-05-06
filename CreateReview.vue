@@ -240,8 +240,11 @@
 
           <div v-if="selectedImages.length" class="mt-4 px-6 text-left">
               <p class="text-sm text-zagblue text-center mb-2">Selected image files:</p>
-              <ul class="text-sm text-gray-600 list-disc list-inside">
-                <li v-for="image in selectedImages" :key="image.name">{{ image.name }}</li>
+              <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm text-gray-600">
+                <li v-for="image in selectedImages" :key="image.previewUrl" class="list-none">
+                  <img :src="image.previewUrl" :alt="image.name" class="w-full aspect-square object-cover rounded border border-gray-200 bg-gray-50">
+                  <span class="block mt-1 truncate" :title="image.name">{{ image.name }}</span>
+                </li>
               </ul>
           </div>
 
@@ -328,7 +331,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import useStorage from '@/composables/useStorage'
 import useCollection from '@/composables/useCollection'
 import getUser from '@/composables/getUser'
@@ -463,6 +466,11 @@ export default {
     const fileError = ref(null)
     const isPending = ref(false)
 
+    const clearSelectedImagePreviews = () => {
+      selectedImages.value.forEach((image) => URL.revokeObjectURL(image.previewUrl))
+      selectedImages.value = []
+    }
+
     const handleSubmit = async () => {
       isPending.value = true
 
@@ -522,10 +530,10 @@ export default {
 
     const handleChange = (e) => {
       const images = Array.from(e.target.files || [])
+      clearSelectedImagePreviews()
 
       if (!images.length) {
         file.value = []
-        selectedImages.value = []
         fileError.value = null
         return
       }
@@ -534,14 +542,18 @@ export default {
 
       if (!invalidImage) {
         file.value = images
-        selectedImages.value = images
+        selectedImages.value = images.map((image) => ({
+          name: image.name,
+          previewUrl: URL.createObjectURL(image)
+        }))
         fileError.value = null
       } else {
         file.value = []
-        selectedImages.value = []
         fileError.value = 'Please select only png, jpg or jpeg image files'
       }
     }
+
+    onBeforeUnmount(clearSelectedImagePreviews)
     
     return { address, address2, addressComponents, property_type, propPros, propCons, whenReviewerVisitedProp, whatInListingIsUntrue, whatToRepairUpgradeAdd, reviewerTextReview, reviewerAnyRelWithSellerOrAgent, reviewPrivacy, smell_rating, kitchen_rating, bathrooms_rating, windows_rating, zzz14, handleSubmit, fileError, handleChange, selectedImages, isPending,   }  /* from vue3-file-selector:  , files  */
   }

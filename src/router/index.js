@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { h } from 'vue'
 import CreateReview from '@/views/CreateReview.vue'
 
 const routes = [
@@ -13,13 +14,20 @@ const routes = [
     props: true,
     component: {
       props: ['id'],
-      template: `
-        <main class="max-w-screen-md mx-auto p-6">
-          <h1 class="text-2xl font-bold text-zaggray">Review saved</h1>
-          <p class="mt-2 text-gray-600">Firestore document ID: {{ id }}</p>
-          <router-link class="inline-block mt-6 text-zagblue underline" to="/">Create another review</router-link>
-        </main>
-      `
+      render() {
+        return h('main', { class: 'max-w-screen-md mx-auto p-6' }, [
+          h('h1', { class: 'text-2xl font-bold text-zaggray' }, 'Review saved'),
+          h('p', { class: 'mt-2 text-gray-600' }, `Firestore document ID: ${this.id}`),
+          h(
+            'a',
+            {
+              class: 'inline-block mt-6 text-zagblue underline',
+              href: '/'
+            },
+            'Create another review'
+          )
+        ])
+      }
     }
   }
 ]
