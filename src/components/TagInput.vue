@@ -5,13 +5,13 @@
     :class="$attrs.class"
     :placeholder="placeholder"
     :alt="alt"
-    :value="inputValue"
+    :value="inputText"
     @input="handleInput"
   >
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   id: {
@@ -34,14 +34,28 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const inputValue = computed(() => props.modelValue.join(', '))
+const parseTags = (value) => value
+  .split(',')
+  .map((tag) => tag.trim())
+  .filter(Boolean)
+
+const tagsMatch = (first, second) => (
+  first.length === second.length && first.every((tag, index) => tag === second[index])
+)
+
+const inputText = ref(props.modelValue.join(', '))
+
+watch(
+  () => props.modelValue,
+  (tags) => {
+    if (!tagsMatch(parseTags(inputText.value), tags)) {
+      inputText.value = tags.join(', ')
+    }
+  }
+)
 
 const handleInput = (event) => {
-  const tags = event.target.value
-    .split(',')
-    .map((tag) => tag.trim())
-    .filter(Boolean)
-
-  emit('update:modelValue', tags)
+  inputText.value = event.target.value
+  emit('update:modelValue', parseTags(inputText.value))
 }
 </script>

@@ -47,3 +47,13 @@ This repository now includes a minimal Vue 3 app at the project root.
 4. Start the app with `npm run dev`.
 
 The app route at `/` renders `src/views/CreateReview.vue`.
+
+## Delivery Notes
+
+The fixed component is included in three places:
+
+- `src/views/CreateReview.vue`: canonical file used by this runnable Vue app. This is the file to drop into the client's real Vue project if they are replacing the active routed component.
+- `CreateReview.vue`: root-level copy of the corrected component for convenient review or handoff.
+- `attachments/CreateReview.vue`: updated copy matching the originally attached component.
+
+Inside `initPlacesAutocomplete()`, the retry guard has an in-code comment explaining why it exists: the Google Maps SDK is loaded asynchronously, so `window.google.maps.places` may not be available yet when Vue's `mounted()` hook fires.

@@ -45,11 +45,11 @@
 
       <hr class="mt-8 mb-8">
 
-      <div  class="relative"> 
+      <div class="space-y-2"> 
         <h3 class="question">Pros<span class="optional">(optional)</span></h3>
-        <div for="propPros" class="text-base -mb-3.5 pb-0 mt-3.5">In just a few words, what are 3 <span class="text-indigo-900">positive</span> things about the house, property or neighborhood?</div>
-         <label for="propPros" class="text-zagblue text-sm ml-0.5 mb-1 italic">separate , with , commas</label>
-        <TagInput class="absolute peer placeholder-transparent focus:placeholder-transparent hover:placeholder-transparent border-gray-300 focus:border-zagblue focus:ring-zagblue rounded-lg w-full md:w-full" placeholder="separate , with , commas" alt="add short tags describing positives, separating each with a comma" id="propPros" v-model="propPros" />
+        <p class="text-base">In just a few words, what are 3 <span class="text-indigo-900">positive</span> things about the house, property or neighborhood?</p>
+        <label for="propPros" class="block text-zagblue text-sm ml-0.5 italic">separate , with , commas</label>
+        <TagInput class="block peer placeholder-transparent focus:placeholder-transparent hover:placeholder-transparent border-gray-300 focus:border-zagblue focus:ring-zagblue rounded-lg w-full md:w-full" placeholder="separate , with , commas" alt="add short tags describing positives, separating each with a comma" id="propPros" v-model="propPros" />
         <!-- <label for="propPros" class="pt-6 sm:pt-0 absolute transition-all duration-500 ease-in-out pl-1 sm:pl-0
           
         peer-placeholder-shown:text-gray-600 peer-placeholder-shown:left-4 peer-placeholder-shown:top-[5.7rem] peer-placeholder-shown:opacity-80 peer-placeholder-shown:text-base 
@@ -63,11 +63,11 @@
       <hr class="mt-10 mb-10">
     
 
-      <div  class="relative"> 
+      <div class="space-y-2"> 
         <h3 class="question">Cons<span class="optional">(optional)</span></h3>
-        <div for="propCons" class="text-base -mb-3.5 pb-0 mt-3.5">List up to 3 <span class="text-indigo-900">negatives</span>, or things you don’t like:</div>
-        <label for="propCons" class="text-zagblue text-sm ml-0.5 mb-1 italic">separate , with , commas</label>
-        <TagInput class="absolute peer placeholder-transparent focus:placeholder-transparent hover:placeholder-transparent border-gray-300 focus:border-zagblue focus:ring-zagblue rounded-lg w-full md:w-full" placeholder="separate , with , commas" alt="add short tags describing negatives, separating each with a comma" id="propCons" v-model="propCons" />
+        <p class="text-base">List up to 3 <span class="text-indigo-900">negatives</span>, or things you don’t like:</p>
+        <label for="propCons" class="block text-zagblue text-sm ml-0.5 italic">separate , with , commas</label>
+        <TagInput class="block peer placeholder-transparent focus:placeholder-transparent hover:placeholder-transparent border-gray-300 focus:border-zagblue focus:ring-zagblue rounded-lg w-full md:w-full" placeholder="separate , with , commas" alt="add short tags describing negatives, separating each with a comma" id="propCons" v-model="propCons" />
         <!-- <label for="propCons" class="pt-6 sm:pt-0 absolute transition-all duration-500 ease-in-out pl-1 sm:pl-0
           
         peer-placeholder-shown:text-gray-600 peer-placeholder-shown:left-4 peer-placeholder-shown:top-[4.2rem] peer-placeholder-shown:opacity-80 peer-placeholder-shown:text-base
@@ -361,6 +361,8 @@ export default {
 
   methods: {
     initPlacesAutocomplete() {
+      // The Google Maps SDK loads asynchronously, so it may not be ready when mounted() runs.
+      // Retry until the Places library is available before creating the autocomplete widget.
       if (!window.google || !window.google.maps || !window.google.maps.places) {
         window.setTimeout(() => this.initPlacesAutocomplete(), 300);
         return;
